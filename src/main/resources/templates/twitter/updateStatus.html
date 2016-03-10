@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>Hello Twitter</title>
+</head>
+<body>
+  <form action="#" method="post" th:action="@{/twitter/updateStatus}" th:object="${tweet}">
+    <textarea autofocus="true" rows="8" cols="35" placeholder="Enter your status" maxlength="140" required="true" th:field="*{status}"></textarea>
+    <p>
+      <input type="submit" value="Update Status" />
+    </p>
+  </form>
+  <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

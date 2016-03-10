@@ -10,5 +10,6 @@
   <ul>
     <li th:each="friend:${friends}" th:text="${friend.name}">Friend</li>
   </ul>
+  <div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

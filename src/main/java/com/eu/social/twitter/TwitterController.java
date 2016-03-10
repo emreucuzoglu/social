@@ -8,31 +8,64 @@ import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.api.TwitterProfile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.eu.social.twitter.definitions.ATwitterController;
+import com.eu.social.twitter.models.Tweet;
 
 @Controller
-@RequestMapping("/")
-public class TwitterController {
-  private Twitter twitter;
-
-  private ConnectionRepository connectionRepository;
+@RequestMapping("/twitter")
+public class TwitterController extends ATwitterController {
 
   @Inject
   public TwitterController(Twitter twitter, ConnectionRepository connectionRepository) {
-    this.twitter = twitter;
-    this.connectionRepository = connectionRepository;
+    super(twitter, connectionRepository);
   }
 
-  @RequestMapping(method = RequestMethod.GET)
-  public String helloTwitter(Model model) {
-    if (connectionRepository.findPrimaryConnection(Twitter.class) == null) {
-      return "redirect:/connect/twitter";
+  @Override
+  public String contextRoot() {
+    String result = checkConnection();
+    if (result != null) {
+      return result;
     }
+    return "/connect/twitterConnected";
+  }
+
+  @Override
+  public String listFriends(Model model) {
+    String result = checkConnection();
+    if (result != null) {
+      return result;
+    }
+
+    result = "/twitter/listFriends";
+
+    Twitter twitter = getTwitter();
 
     model.addAttribute(twitter.userOperations().getUserProfile());
     CursoredList<TwitterProfile> friends = twitter.friendOperations().getFriends();
     model.addAttribute("friends", friends);
-    return "hello";
+    return result;
   }
+
+  @Override
+  public String updateStatus(Model model) {
+    model.addAttribute("tweet", new Tweet());
+    return null;
+  }
+
+  @Override
+  public String updateStatus(@ModelAttribute(value = "tweet") Tweet tweet) {
+    String result = checkConnection();
+    if (result != null) {
+      return result;
+    }
+
+    Twitter twitter = getTwitter();
+    twitter.timelineOperations().updateStatus(tweet.getStatus());
+
+    return null;
+  }
+
 }

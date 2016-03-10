@@ -4,8 +4,11 @@
 </head>
 <body>
   <h3>Connected to Twitter</h3>
-  <p>
-    You are now connected to your Twitter account. Click <a href="/">here</a> to see your Twitter friends.
-  </p>
+  <p>You are now connected to your Twitter account.</p>
+  <ol>
+    <li><a href="/twitter/listFriends">List Friends</a></li>
+    <li><a href="/twitter/updateStatus">Update Status</a></li>
+  </ol>
+  <div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
